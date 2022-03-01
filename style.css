@@ -83,7 +83,7 @@ button:focus {
     align-items: center;
     justify-content: center;
     transform: translateY(0);
-    transition: transform 0.3 ease-in-out;
+    transition: transform 0.2s linear;
 }
 
 .settings.hide {
@@ -107,7 +107,7 @@ input {
     font-size: 14px;
     width: 300px;
     padding: 12px 20px;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .score-container {
