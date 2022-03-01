@@ -17,9 +17,20 @@ let randomWord = '';
 let score = 0;
 let time = 10;
 let curWordIndex = 0;
+// Set difficulty to local storage value, or default to medium
+let difficulty =
+    localStorage.getItem('difficulty') !== null
+        ? localStorage.getItem('difficulty')
+        : 'medium';
 
 // Focus to input on start
 text.focus();
+
+// Alter select list to show difficulty chosen
+difficultySelect.value =
+    localStorage.getItem('difficulty') !== null
+        ? localStorage.getItem('difficulty')
+        : 'medium';
 
 const getRandomWord = async () => {
     // if no words in array, or user has reached the end, fetch & push in more random words
@@ -76,6 +87,7 @@ const timeInterval = setInterval(updateTime, 1000);
 
 // Event Listeners
 
+// Typing
 text.addEventListener('input', (e) => {
     const insertedText = e.target.value;
 
@@ -85,7 +97,21 @@ text.addEventListener('input', (e) => {
 
         // Clear
         e.target.value = '';
-        time += 5;
-        updateTime;
+
+        difficulty == 'hard'
+            ? (time += 2)
+            : difficulty == 'medium'
+            ? (time += 4)
+            : (time += 6);
+
+        updateTime();
     }
+});
+
+// Settings Button
+settingsBtn.addEventListener('click', () => settings.classList.toggle('hide'));
+
+settingsForm.addEventListener('change', (e) => {
+    difficulty = e.target.value;
+    localStorage.setItem('difficulty', difficulty);
 });
