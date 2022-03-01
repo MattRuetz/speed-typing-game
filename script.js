@@ -2,7 +2,7 @@ const word = document.getElementById('word');
 const text = document.getElementById('text');
 const scoreEl = document.getElementById('score');
 const timeEl = document.getElementById('time');
-const endgameEl = document.getElementById('end-game');
+const endgameEl = document.getElementById('end-game-container');
 const settingsBtn = document.getElementById('settings-btn');
 const settingsForm = document.getElementById('settings-form');
 const settings = document.getElementById('settings');
@@ -23,13 +23,16 @@ text.focus();
 
 const getRandomWord = async () => {
     // if no words in array, or user has reached the end, fetch & push in more random words
-    if (words.length === 0 || curWordIndex === words.length - 3) {
+    if (words.length === 0 || curWordIndex === words.length - 1) {
         const result = await fetch(apiUrl);
         const fetchedWords = await result.json();
-        words.push(fetchedWords);
+        words = fetchedWords;
+        curWordIndex = 0;
+        console.log(words);
     }
+
     curWordIndex++;
-    return await words[0][curWordIndex - 1];
+    return await words[curWordIndex - 1];
 };
 
 // Add word to DOM
@@ -44,7 +47,32 @@ const updateScore = () => {
     scoreEl.textContent = score;
 };
 
+const updateTime = () => {
+    time--;
+    timeEl.innerHTML = time + 's';
+
+    if (time === 0) {
+        clearInterval(timeInterval);
+        // Game over
+        gameOver();
+    }
+};
+
+// Show end-game-container
+const gameOver = () => {
+    endgameEl.innerHTML = `
+    <h1>⏰ Time ran out! ⏰</h1>
+    <p>Your Final Score: ${score}</p>
+    <button onclick="location.reload()">Reload</button>
+    `;
+
+    endgameEl.style.display = 'flex';
+};
+
+// ON LOAD
 addWordToDOM();
+// Start countdown clock
+const timeInterval = setInterval(updateTime, 1000);
 
 // Event Listeners
 
@@ -57,5 +85,7 @@ text.addEventListener('input', (e) => {
 
         // Clear
         e.target.value = '';
+        time += 5;
+        updateTime;
     }
 });
